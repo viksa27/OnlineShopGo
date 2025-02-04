@@ -8,7 +8,7 @@ import (
 	"OnlineShopGo/dto"
 )
 
-var jwtSecret = []byte("your_secret_key")
+var jwtSecret = []byte("TKro3oiQodzp1YF49yVKc5YIiZp0jQJSlDmpub3PWsE=")
 
 func GenerateJWT(userID uint) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)

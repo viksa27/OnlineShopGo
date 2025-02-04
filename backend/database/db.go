@@ -25,13 +25,15 @@ func InitDB() {
 		&models.User{},
 		&models.Administrator{},
 		&models.Category{},
-		&models.Product{},
+		&models.Comment{},
 		&models.PaymentCard{},
+		&models.Product{},
 		// more models here
 	}
 
 	err = DB.AutoMigrate(modelsToMigrate...)
 	if err != nil {
+
 		log.Fatal("❌ Failed to migrate database:", err)
 	}
 	fmt.Println("✅ Database migration completed successfully!")

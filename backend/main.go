@@ -3,7 +3,7 @@ package main
 import (
 	"OnlineShopGo/database"
 	"OnlineShopGo/handlers"
-	"net/http"
+	"OnlineShopGo/utils"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -11,20 +11,27 @@ import (
 
 func main() {
 	database.InitDB()
+	utils.InitRedis()
 
 	r := gin.Default()
 
-	// Public Routes
-	r.POST("/login", handlers.Login)
-
-	// Protected Routes (Require JWT)
-	protected := r.Group("/api")
-	protected.Use(handlers.AuthMiddleware())
+	api := r.Group("/api")
 	{
-		protected.GET("/profile", func(c *gin.Context) {
-			userID := c.GetUint("userID")
-			c.JSON(http.StatusOK, gin.H{"message": "Authenticated", "user_id": userID})
-		})
+		api.POST("/login", handlers.Login)
+		api.POST("/register", handlers.Register)
+		api.POST("/logout", utils.AuthMiddleware(), handlers.Logout) // 🔥 Add logout route
+
+		// Public category routes
+		api.GET("/categories", handlers.GetCategories)
+
+		// Protected admin routes
+		admin := api.Group("/admin")
+		admin.Use(utils.AdminAuthMiddleware()) // Require admin token
+		{
+			admin.POST("/categories", handlers.CreateCategory)
+			admin.PUT("/categories/:id", handlers.UpdateCategory)
+			admin.DELETE("/categories/:id", handlers.DeleteCategory)
+		}
 	}
 
 	port := os.Getenv("PORT")
