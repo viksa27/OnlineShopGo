@@ -61,6 +61,9 @@ func main() {
 		api.GET("/orders", utils.AuthMiddleware(), handlers.GetUserOrders)
 		api.POST("/orders", utils.AuthMiddleware(), handlers.CreateOrder)
 
+		api.POST("/comments", utils.AuthMiddleware(), handlers.CreateComment)
+		api.DELETE("/comments/:id", utils.AuthMiddleware(), handlers.DeleteComment)
+
 		// Public category routes
 		api.GET("/categories", handlers.GetCategories)
 

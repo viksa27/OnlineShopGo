@@ -11,11 +11,13 @@ import {ChangePasswordComponent} from '../components/change-password/change-pass
 import { CartComponent } from '../components/cart/cart.component';
 import { OrderComponent } from '../components/order/order.component';
 import { MyOrdersComponent } from '../components/my-orders/my-orders.component';
+import { ProductDetailsComponent } from '../components/product-details/product-details.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'products', pathMatch: 'full'},
   {path: 'login', component: LoginComponent, canActivate: [LoginGuard]},
   {path: 'products', component: ProductsComponent},
+  {path: "product-details/:id", component: ProductDetailsComponent},
   {path: 'payment', component: PaymentFormComponent, canActivate: [AuthGuard]},
   {path: 'success', component: SuccessComponent, canActivate: [AuthGuard]},
   {path: 'my-profile', component: MyProfileComponent, canActivate: [AuthGuard]},

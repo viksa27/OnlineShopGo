@@ -27,8 +27,8 @@ export class ProductService {
     return this.http.get<Product[]>(url, { headers: authHeaders });
   }
 
-  getProductById(productId: number): Observable<Product> {
-    const url = `${this.API_URL}products/id/${productId}`;
+  getProductById(productId: number, comments: boolean = false, ratings: boolean = false): Observable<Product> {
+    const url = `${this.API_URL}products/id/${productId}?comments=${comments}&ratings=${ratings}`;
     const authHeaders = this.authService.getAuthHeader();
 
     return this.http.get<Product>(url, { headers: authHeaders });
