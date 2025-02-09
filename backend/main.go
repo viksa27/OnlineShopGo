@@ -64,6 +64,9 @@ func main() {
 		api.POST("/comments", utils.AuthMiddleware(), handlers.CreateComment)
 		api.DELETE("/comments/:id", utils.AuthMiddleware(), handlers.DeleteComment)
 
+		api.POST("/ratings", utils.AuthMiddleware(), handlers.CreateRating)
+		api.DELETE("/ratings/:id", utils.AuthMiddleware(), handlers.DeleteRating)
+
 		// Public category routes
 		api.GET("/categories", handlers.GetCategories)
 
