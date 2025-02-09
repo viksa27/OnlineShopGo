@@ -12,6 +12,8 @@ export const ORDER_API_URL = "orders";
 
 export const CART_API_URL = "cart";
 
+export const COMMENTS_API_URL = "comments"
+export const RATINGS_API_URL = "ratings"
 
 export const UPLOADS_RESOURCE_URL = "uploads/";
 

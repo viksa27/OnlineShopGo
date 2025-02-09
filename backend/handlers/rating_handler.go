@@ -48,8 +48,13 @@ func CreateRating(c *gin.Context) {
 	rating.ProductID = ratingRequest.ProductID
 	rating.Rating = ratingRequest.Rating
 
-	if err := database.DB.Create(&rating).Error; err != nil {
+	if err := database.DB.Preload("User").Create(&rating).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create rating"})
+		return
+	}
+
+	if err := database.DB.Preload("User").First(&rating, rating.ID).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not load user for rating"})
 		return
 	}
 

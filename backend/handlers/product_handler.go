@@ -86,6 +86,13 @@ func GetProductByID(c *gin.Context) {
 	query := database.DB.Preload("Category")
 	if preloadComments {
 		query = query.Preload("Comments")
+		query = query.Preload("Comments.User")
+	}
+
+	preloadRatings := c.DefaultQuery("ratings", "false") == "true"
+	if preloadRatings {
+		query = query.Preload("Ratings")
+		query = query.Preload("Ratings.User")
 	}
 
 	if err := query.First(&product, uint(productID)).Error; err != nil {

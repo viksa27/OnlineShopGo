@@ -9,9 +9,9 @@ import {User} from '../../models/User'
 import { PaymentCard } from '../../models/PaymentCard';
 import { CreateCardRequest } from '../../models/request/CreateCardRequest';
 import { DisplayPaymentCard } from '../../models/DisplayPaymentCard';
-import {PaymentCardService } from '../../services/card-service/card-service.service'
+import {PaymentCardService } from '../../services/card/card.service'
 import { GetCardsResponse } from '../../models/response/GetCardsResponse';
-import { AddressService } from '../../services/address-service/address-service.service';
+import { AddressService } from '../../services/address/address.service';
 import { Address } from '../../models/Address';
 import { AddressRequest } from '../../models/request/AddressRequest';
 

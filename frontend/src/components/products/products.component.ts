@@ -10,7 +10,7 @@ import {Product} from '../../models/Product'
 import {environment} from '../../environments/environment'
 import {UPLOADS_RESOURCE_URL} from '../../helpers/constants'
 import {Category} from '../../models/Category'
-import { CartService } from '../../services/cart-service/cart-service.service';
+import { CartService } from '../../services/cart/cart.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -50,6 +50,11 @@ export class ProductsComponent {
   }
 
   addToCart(productId: number): void {
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login']);
+      return;
+    } 
+
     this.cartService.addToCart(productId).subscribe({
       next: () => {
         this.snackBar.open('Product added to cart!', 'Close', { duration: 2000 });
@@ -59,6 +64,11 @@ export class ProductsComponent {
         this.snackBar.open(errorMessage, 'Close', { duration: 3000, panelClass: ['error-snackbar'] });
       }
     });
+  }
+
+  viewProduct(productId: number): void {
+    this.router.navigate([`/product-details/${productId}`]);
+    return;
   }
 
   loadProducts(): void {

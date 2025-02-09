@@ -1,1 +1,53 @@
-<p>product-details works!</p>
+<app-nav-bar></app-nav-bar>
+<div *ngIf="product" class="product-details">
+    <div class="product-info">
+      <img  [src]="serverUrl + uploadsUrl + product.Image" alt="{{ product.Name }}" class="product-image" />
+      <div class="details">
+        <h2>{{ product.Name }}</h2>
+        <p>{{ product.Description }}</p>
+        <h3>Price: ${{ product.Price }}</h3>
+        <button mat-raised-button color="primary" (click)="addToCart()">Add to Cart</button>
+      </div>
+    </div>
+  
+    <div class="comments">
+        <h3>Comments</h3>
+        <div *ngFor="let comment of product.Comments" class="comment">
+          <strong>{{ comment.User.Name }} {{ comment.User.Surname }}</strong>
+          <p>{{ comment.Content }}</p>
+        </div>
+    
+        <div *ngIf="isLoggedIn" class="add-comment">
+          <textarea [(ngModel)]="newComment" placeholder="Write a comment..."></textarea>
+          <button mat-button color="primary" (click)="postComment()">Post Comment</button>
+        </div>
+      </div>
+
+    <div class="ratings">
+      <h3>Ratings</h3>
+      <div *ngFor="let rating of product.Ratings" class="rating">
+        <strong>
+            {{ rating.User.Name && rating.User.Surname ? (rating.User.Name + ' ' + rating.User.Surname) : rating.User.Email }}
+        </strong>
+        <span class="stars">
+          <ng-container *ngFor="let star of [1,2,3,4,5]">
+            <mat-icon>{{ star <= rating.Rating ? 'star' : 'star_border' }}</mat-icon>
+          </ng-container>
+        </span>
+      </div>
+  
+      <div *ngIf="isLoggedIn" class="add-rating">
+        <h4>Rate this product:</h4>
+        <span class="stars">
+          <ng-container *ngFor="let star of [1,2,3,4,5]">
+            <mat-icon (click)="newRating = star" [class.selected]="star <= newRating">
+              {{ star <= newRating ? 'star' : 'star_border' }}
+            </mat-icon>
+          </ng-container>
+        </span>
+        <button mat-button color="primary" (click)="postRating()">Submit Rating</button>
+      </div>
+    </div>
+
+  </div>
+  

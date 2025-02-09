@@ -13,7 +13,7 @@ type Product struct {
 	Quantity    uint    `json:"Quantity"`
 	Image       *string `json:"Image"` // Nullable string
 
-	Category Category  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"category"`
-	Comments []Comment `gorm:"foreignKey:ProductID" json:"comments,omitempty"` // One-to-Many with Comments
-	//Ratings     []Rating   `gorm:"foreignKey:ProductID" json:"ratings,omitempty"` // One-to-Many with Ratings
+	Category Category  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"Category,omitempty"`
+	Comments []Comment `gorm:"foreignKey:ProductID" json:"Comments,omitempty"` // One-to-Many with Comments
+	Ratings  []Rating  `gorm:"foreignKey:ProductID" json:"Ratings,omitempty"`  // One-to-Many with Ratings
 }

@@ -9,6 +9,6 @@ type Comment struct {
 	Content   string `gorm:"type:text;not null" json:"Content"`
 
 	// Lazy loading relationships
-	//Commenter User    `gorm:"foreignKey:CommenterID" json:"commenter,omitempty"`
+	User User `gorm:"foreignKey:UserID;preload:true" json:"User"`
 	//Product   Product `gorm:"foreignKey:ProductID" json:"product,omitempty"`
 }

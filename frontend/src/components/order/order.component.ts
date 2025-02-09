@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CartService } from '../../services/cart-service/cart-service.service';
-import { OrderService } from '../../services/order-service/order-service.service';
+import { CartService } from '../../services/cart/cart.service';
+import { OrderService } from '../../services/order/order.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { ProductService } from '../../services/product/product.service';
@@ -10,8 +10,8 @@ import { OrderItemRequest } from '../../models/request/OrderItemRequest';
 import { Product } from '../../models/Product';
 import { Address } from '../../models/Address';
 import { PaymentCard } from '../../models/PaymentCard';
-import { AddressService } from '../../services/address-service/address-service.service';
-import { PaymentCardService } from '../../services/card-service/card-service.service';
+import { AddressService } from '../../services/address/address.service';
+import { PaymentCardService } from '../../services/card/card.service';
 
 @Component({
   selector: 'app-order',

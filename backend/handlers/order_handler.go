@@ -39,7 +39,7 @@ func CreateOrder(c *gin.Context) {
 
 		// Check product availability
 		if product.Quantity < item.Quantity {
-			c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Insufficient stock for product %d", item.ProductID)})
+			c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Insufficient stock for product %s. Available items: %d", product.Name, product.Quantity)})
 			return
 		}
 

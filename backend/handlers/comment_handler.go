@@ -39,8 +39,13 @@ func CreateComment(c *gin.Context) {
 	comment.ProductID = commentRequest.ProductID
 	comment.Content = commentRequest.Content
 
-	if err := database.DB.Create(&comment).Error; err != nil {
+	if err := database.DB.Preload("User").Create(&comment).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create comment"})
+		return
+	}
+
+	if err := database.DB.Preload("User").First(&comment, comment.ID).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not load user for rating"})
 		return
 	}
 
