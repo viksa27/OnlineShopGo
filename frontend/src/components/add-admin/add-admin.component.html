@@ -1,0 +1,36 @@
+<app-nav-bar></app-nav-bar>
+<div class="fullscreen-container">
+  <mat-card appearance="raised">
+    <div class="container" [formGroup]="registerForm">
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" name="email">
+          <mat-error *ngIf="checkFormForErrors('email')">
+            <ng-container *ngIf="checkFormRequired('email')">
+              Email is required.
+            </ng-container>
+            <ng-container *ngIf="checkFormEmailValidity('email')">
+              Please enter a valid email address.
+            </ng-container>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div style="margin-top: 10px;">
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" type="password">
+          <mat-error *ngIf="checkFormRequired('password')">
+            Password is required.
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="button-container">
+        <button mat-flat-button color="accent" (click)="onRegister()" [disabled]="isSubmitDisabled()">Register Admin</button>
+      </div>
+      <br>
+    </div>
+  </mat-card>
+</div>

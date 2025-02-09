@@ -16,13 +16,19 @@ func IsAdmin(userID uint) bool {
 	return result.Error == nil
 }
 
+func IsUser(userID uint) bool {
+	var user models.User
+	result := database.DB.First(&user, "id = ?", userID)
+	return result.Error == nil
+}
+
 func CheckCredentials(c *gin.Context, actualPw string, requestPassword string, id uint, role string) {
 	if err := bcrypt.CompareHashAndPassword([]byte(actualPw), []byte(requestPassword)); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return
 	}
 
-	token, err := GenerateJWT(id)
+	token, err := GenerateJWT(id, role == "administrator")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not generate token"})
 		return
@@ -98,8 +104,13 @@ func ChangePasswordAdministrator(c *gin.Context, request dto.ChangePasswordReque
 		return
 	}
 
-	admin.Password = request.NewPassword
-	database.DB.Save(&admin)
+	hashedPw, err := utils.HashPassword(request.NewPassword)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Couldn't hash password"})
+		return
+	}
+
+	database.DB.Model(&admin).Update("Password", string(hashedPw))
 
 	c.JSON(http.StatusOK, gin.H{"message": "Password changed successfully"})
 }
@@ -107,6 +118,11 @@ func ChangePasswordAdministrator(c *gin.Context, request dto.ChangePasswordReque
 func GetUserIdFromContext(c *gin.Context) (uint, bool) {
 	userID, exists := c.Get("userID")
 	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User ID not found"})
+		return 0, false
+	}
+
+	if userID == 0 {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User ID not found"})
 		return 0, false
 	}

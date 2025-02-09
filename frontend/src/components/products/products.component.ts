@@ -1,8 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable, Subscription} from 'rxjs';
+import { Subscription} from 'rxjs';
 import {Router} from '@angular/router';
-import {saveAs} from 'file-saver';
-import {LoaderService} from '../../services/loader.service';
 import {AuthService} from '../../services/auth/auth.service';
 import {ProductService} from '../../services/product/product.service';
 import { CategoryService } from '../../services/category/category.service';
@@ -20,7 +18,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './products.component.html',
   styleUrl: './products.component.css'
 })
-export class ProductsComponent {
+export class ProductsComponent implements OnInit {
   products: Product[] = [];
   filteredProducts: Product[] = [];
   serverUrl: string = environment.serverUrl;
@@ -28,6 +26,7 @@ export class ProductsComponent {
   categories: Category[] = [];
   searchTerm: string = '';
   selectedCategory: number | null = null;
+  isAdmin: boolean = false; 
 
   private sub$ = new Subscription();
 
@@ -36,7 +35,6 @@ export class ProductsComponent {
       private cartService: CartService,
       private snackBar: MatSnackBar,
       private router: Router,
-      private loaderService: LoaderService,
       private authService: AuthService) {
   }
 
@@ -46,7 +44,8 @@ export class ProductsComponent {
 
   ngOnInit(): void {
     this.loadProducts();
-    this.loadCategories();    
+    this.loadCategories();
+    this.isAdmin = this.authService.isAdmin(); 
   }
 
   addToCart(productId: number): void {
@@ -68,6 +67,11 @@ export class ProductsComponent {
 
   viewProduct(productId: number): void {
     this.router.navigate([`/product-details/${productId}`]);
+    return;
+  }
+
+  editProduct(productId: number): void {
+    this.router.navigate([`/edit-product/${productId}`]);
     return;
   }
 

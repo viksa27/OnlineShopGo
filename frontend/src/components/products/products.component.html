@@ -1,28 +1,6 @@
 <app-nav-bar></app-nav-bar>
 <div class="container"> 
-  <!--
-  <div>
-    <h1>Download the best gym management software</h1>
-  </div>
-  <div style="text-align: center; margin: 0 auto; max-width: 800px;">
-    <p>
-      Our Gym Management Desktop App is the ultimate solution for streamlining your fitness center's operations.
-      With core features like client and employee management, membership tracking, and payment monitoring, it ensures smooth day-to-day administration.
-      Gain valuable insights with revenue tracking and detailed reports.
-      <br><br>
-      Upgrade to the premium version to unlock advanced features like real-time access logs of recently scanned users and seamless integration with serial-port-enabled devices, such as Arduino-based turnstiles and automated access control systems.
-      Whether connected to a local database or the cloud, the app offers flexibility to fit your needs, making gym management smarter, faster, and more efficient than ever.
-    </p>
-    <button mat-flat-button>DOWNLOAD NOW</button>
-  </div>
--->
-
-  <!--
-  <div>
-    <h1 class="bold-header">Product List</h1>
-  </div>
-  -->
-
+  
   <div class="search-filter-container">
     <mat-form-field class="search-field" appearance="fill">
       <mat-label>Search by Name</mat-label>
@@ -57,57 +35,11 @@
         </mat-card-content>
   
         <mat-card-actions class="button-container">
-          <button mat-flat-button class="action-button" (click)="addToCart(product.ID)">Add to Cart</button>
+          <button *ngIf="!isAdmin" mat-flat-button class="action-button" (click)="addToCart(product.ID)">Add to Cart</button>
+          <button *ngIf="isAdmin" mat-flat-button class="action-button" (click)="editProduct(product.ID)">Edit</button>
           <button mat-flat-button class="action-button" (click)="viewProduct(product.ID)">View</button>
         </mat-card-actions>
       </mat-card>
     </div>
   </div>
-  
-  
-
-  <!--
-  
-  <div class="card-container">
-    <mat-card appearance="raised">
-      <mat-card-header class="bold-header">
-        Basic
-      </mat-card-header>
-      <mat-card-content>
-        <ul>
-          <li>Add and manage client profiles.</li>
-          <li>Employee and administrator accounts for secure access.</li>
-          <li>Create custom client subscriptions and set their validity periods.</li>
-          <li>View comprehensive statistics and insights on gym operations.</li>
-          <li>Maintain a changes log for administrator actions.</li>
-          <li>Connect to a local or cloud database (PostgreSQL-based).</li>
-        </ul>
-      </mat-card-content>
-      <mat-card-actions align="end" style="display: flex; justify-content: flex-end; align-items: center;">
-        <span style="margin-right: 10px; font-weight: bold;">$50</span>
-        <button mat-flat-button>Buy</button>
-      </mat-card-actions>
-    </mat-card>
-
-    <mat-card appearance="raised">
-      <mat-card-header class="bold-header">
-        Premium
-      </mat-card-header>
-      <mat-card-content>
-        Everything that includes basic package, plus:
-        <ul>
-          <li>Advanced access control using a driver to open/close automated doors.</li>
-          <li>Integration with Arduino or relay-based devices for seamless access management.</li>
-          <li>Automatic access for clients with active subscriptions.</li>
-          <li>Logs of recently scanned (entered) clients at the gym.</li>
-          <li>Fully automated entry: no employee validation needed.</li>
-        </ul>
-      </mat-card-content>
-      <mat-card-actions align="end" style="display: flex; justify-content: flex-end; align-items: center;">
-        <span style="margin-right: 10px; font-weight: bold;">$100</span>
-        <button mat-flat-button>Buy</button>
-      </mat-card-actions>
-    </mat-card>
-  </div>
--->
 </div>

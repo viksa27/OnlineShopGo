@@ -2,27 +2,132 @@ package handlers
 
 import (
 	"OnlineShopGo/database"
+	"OnlineShopGo/dto"
 	"OnlineShopGo/models"
 	"OnlineShopGo/utils"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
+	"time"
 )
 
-func CreateProduct(c *gin.Context) {
-	var product models.Product
+const STATIC_UPLOADS_PATH = "./uploads"
 
-	if err := c.ShouldBindJSON(&product); err != nil {
+// Function to handle file upload
+func uploadFile(c *gin.Context) (string, error) {
+	file, _ := c.FormFile("image")
+	if file == nil {
+		return "", fmt.Errorf("no file uploaded")
+	}
+
+	// Create the directory if it doesn't exist
+	err := os.MkdirAll(STATIC_UPLOADS_PATH, os.ModePerm)
+	if err != nil {
+		return "", fmt.Errorf("failed to create directory: %v", err)
+	}
+
+	// Create a unique file name
+	fileExtension := filepath.Ext(file.Filename)
+	fileName := fmt.Sprintf("%d%s", time.Now().UnixNano(), fileExtension)
+
+	// Save the file to the upload path
+	filePath := filepath.Join(STATIC_UPLOADS_PATH, fileName)
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		return "", fmt.Errorf("failed to save file: %v", err)
+	}
+
+	return fileName, nil
+}
+
+func CreateProduct(c *gin.Context) {
+	var request dto.CreateProductRequest
+
+	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
+	var noImgPath = "no_image.png"
+	product := models.Product{
+		CategoryID:  request.CategoryID,
+		Name:        request.Name,
+		Price:       request.Price,
+		Description: request.Description,
+		Quantity:    request.Quantity,
+		Image:       &noImgPath,
+	}
+
 	if err := database.DB.Create(&product).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create product"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create product"})
 		return
 	}
 
 	c.JSON(http.StatusCreated, product)
+}
+
+func AddPicture(c *gin.Context) {
+	productIDStr := c.Param("id")
+	var product models.Product
+
+	productID, err := strconv.ParseUint(productIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Product ID"})
+		return
+	}
+
+	if err := database.DB.First(&product, uint(productID)).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Product not found"})
+		return
+	}
+
+	if file, _ := c.FormFile("image"); file != nil {
+		// Upload image and get the file path
+		imagePath, err := uploadFile(c)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		product.Image = &imagePath
+		if err := database.DB.Save(&product).Error; err != nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Could not update product with image"})
+			return
+		}
+
+		c.JSON(http.StatusCreated, product)
+	} else {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Couldn't read file"})
+		return
+	}
+}
+
+func DeletePicture(c *gin.Context) {
+	productIDStr := c.Param("id")
+	var product models.Product
+
+	productID, err := strconv.ParseUint(productIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Product ID"})
+		return
+	}
+
+	if err = database.DB.First(&product, uint(productID)).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Product not found"})
+		return
+	}
+
+	var noImgPath = "no_image.png"
+	product.Image = &noImgPath
+
+	if err = database.DB.Save(&product).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update product"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Product deleted successfully"})
 }
 
 func EditProduct(c *gin.Context) {
@@ -40,10 +145,17 @@ func EditProduct(c *gin.Context) {
 		return
 	}
 
-	if err := c.ShouldBindJSON(&product); err != nil {
+	var request dto.CreateProductRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	product.CategoryID = request.CategoryID
+	product.Name = request.Name
+	product.Price = request.Price
+	product.Description = request.Description
+	product.Quantity = request.Quantity
 
 	if err := database.DB.Save(&product).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update product"})
@@ -62,7 +174,7 @@ func DeleteProduct(c *gin.Context) {
 		return
 	}
 
-	if err := database.DB.Delete(&models.Product{}, productID).Error; err != nil {
+	if err = database.DB.Delete(&models.Product{}, productID).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete product"})
 		return
 	}

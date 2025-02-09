@@ -13,7 +13,9 @@
     <div class="comments">
         <h3>Comments</h3>
         <div *ngFor="let comment of product.Comments" class="comment">
-          <strong>{{ comment.User.Name }} {{ comment.User.Surname }}</strong>
+          <strong>
+            {{ comment.User.Name && comment.User.Surname ? (comment.User.Name + ' ' + comment.User.Surname) : comment.User.Email}}
+          </strong>
           <p>{{ comment.Content }}</p>
         </div>
     

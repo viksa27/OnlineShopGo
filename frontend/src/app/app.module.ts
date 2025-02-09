@@ -21,7 +21,6 @@ import {
   MatCardHeader, MatCardSubtitle,
   MatCardTitle
 } from '@angular/material/card';
-import {PaymentFormComponent} from '../components/payment-form/payment-form.component';
 import {SuccessComponent} from '../components/success/success.component';
 import {ChangePasswordComponent} from '../components/change-password/change-password.component';
 import {MatIcon} from '@angular/material/icon';
@@ -33,6 +32,13 @@ import { CartComponent } from '../components/cart/cart.component';
 import { OrderComponent } from '../components/order/order.component';
 import { MyOrdersComponent } from '../components/my-orders/my-orders.component';
 import { ProductDetailsComponent } from '../components/product-details/product-details.component';
+import { CreateProductComponent } from '../components/create-product/create-product.component';
+import { EditProductComponent } from '../components/edit-product/edit-product.component';
+import { CategoryManagementComponent } from '../components/category-management/category-management.component';
+import { AddAdminComponent } from '../components/add-admin/add-admin.component';
+import { MatListModule } from '@angular/material/list';
+import { MatDialogModule } from '@angular/material/dialog';
+
 
 @NgModule({
   declarations: [
@@ -40,14 +46,17 @@ import { ProductDetailsComponent } from '../components/product-details/product-d
     LoginComponent,
     ProductsComponent,
     NavBarComponent,
-    PaymentFormComponent,
     SuccessComponent,
     MyProfileComponent,
     ChangePasswordComponent,
     CartComponent,
     OrderComponent,
     MyOrdersComponent,
-    ProductDetailsComponent
+    ProductDetailsComponent,
+    CreateProductComponent,
+    EditProductComponent,
+    CategoryManagementComponent,
+    AddAdminComponent
   ],
   imports: [
     BrowserModule,
@@ -71,6 +80,8 @@ import { ProductDetailsComponent } from '../components/product-details/product-d
     MatProgressSpinner,
     MatSelectModule,
     FormsModule,
+    MatListModule,
+    MatDialogModule
   ],
   providers: [
     provideAnimationsAsync('noop'),

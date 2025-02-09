@@ -1,0 +1,57 @@
+<app-nav-bar></app-nav-bar>
+
+<div class="category-management-container">
+  <h2>Category Management</h2>
+
+  <!-- Category List -->
+  <div class="category-list">
+    <div class="category-item" *ngFor="let category of categories">
+      <span class="category-name">{{ category.Name }}</span>
+      <div class="category-actions">
+        <button mat-icon-button class="edit-button" (click)="editCategory(category)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button class="delete-button" (click)="deleteCategory(category.ID)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Category Button -->
+  <button mat-raised-button color="primary" (click)="openAddCategoryDialog()">Add Category</button>
+
+  <!-- Edit Category Dialog -->
+  <div *ngIf="isEditDialogOpen && selectedCategory != null" class="dialog-overlay">
+    <div class="dialog-content">
+      <h3>Edit Category</h3>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Category Name</mat-label>
+        <input matInput [(ngModel)]="selectedCategory.Name" />
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Category Description</mat-label>
+        <textarea matInput [(ngModel)]="selectedCategory.Description"></textarea>
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="updateCategory()">Save</button>
+      <button mat-raised-button color="warn" (click)="closeEditDialog()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Add Category Dialog -->
+  <div *ngIf="isAddDialogOpen" class="dialog-overlay">
+    <div class="dialog-content">
+      <h3>Add Category</h3>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Category Name</mat-label>
+        <input matInput [(ngModel)]="newCategory.Name" />
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Category Description</mat-label>
+        <textarea matInput [(ngModel)]="newCategory.Description"></textarea>
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="createCategory()">Save</button>
+      <button mat-raised-button color="warn" (click)="closeAddDialog()">Cancel</button>
+    </div>
+  </div>
+</div>

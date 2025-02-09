@@ -5,7 +5,6 @@ import {LoginService} from '../../services/login/login.service';
 import {AuthService} from '../../services/auth/auth.service';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
-import {log} from '@angular-devkit/build-angular/src/builders/ssr-dev-server';
 import {MatSnackBar} from '@angular/material/snack-bar';
 
 
@@ -28,7 +27,7 @@ export class LoginComponent implements OnDestroy {
               private router: Router,
               private snackBar: MatSnackBar) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required/*, Validators.email*/]],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     })
   }
@@ -69,6 +68,7 @@ export class LoginComponent implements OnDestroy {
       this.loginService.login(loginRequest).subscribe({
         next: (response) => {
           this.authService.loginUser(response.token, loginRequest.Email, response.role);
+          this.snackBar.open('Successfully logged in!', 'Close', { duration: 2000 });
           this.router.navigate(['/products']);
         },
         error: (error) => {
@@ -91,6 +91,7 @@ export class LoginComponent implements OnDestroy {
       this.loginService.register(loginRequest).subscribe({
         next: (response) => {
           this.authService.loginUser(response.token, loginRequest.Email, response.role);
+          this.snackBar.open('Successfully registered!', 'Close', { duration: 2000 });
           this.router.navigate(['/products']);
         },
         error: (error) => {

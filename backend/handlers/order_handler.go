@@ -69,8 +69,8 @@ func CreateOrder(c *gin.Context) {
 	}
 
 	// Assigning order id
-	for _, item := range orderItems {
-		item.OrderID = order.ID
+	for i := range orderItems {
+		orderItems[i].OrderID = order.Model.ID
 	}
 
 	if err := database.DB.Create(&orderItems).Error; err != nil {

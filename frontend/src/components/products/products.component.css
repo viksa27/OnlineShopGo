@@ -15,17 +15,17 @@
   
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3; /* Limit to 3 lines */
-  overflow: hidden; /* Hide overflowing text */
-  text-overflow: ellipsis; /* Add "..." at the end */
-  line-height: 1.2em; /* Adjust line height for proper wrapping */
-  max-height: 3.6em; /* 3 lines of text */
-  height: 3.6em; /* Ensure the height is fixed */
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2em;
+  max-height: 3.6em;
+  height: 3.6em;
 
-  word-wrap: break-word; /* Allow the text to wrap if it's too long */
-  word-break: break-word; /* Break words if necessary */
-  overflow-wrap: break-word; /* Ensures text breaks into multiple lines */
-  white-space: normal; /* Ensures the text wraps and doesn't overflow */
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .content-wrapper {
@@ -40,13 +40,13 @@
   justify-content: center;
   align-items: center;
   margin: 12px 0;
-  height: 200px; /* Fixed height for the image */
+  height: 200px;
 }
 
 .product-image {
   width: 100%;
-  height: 100%; /* Ensure it takes up the full container height */
-  object-fit: cover; /* Resize the image while maintaining the aspect ratio */
+  height: 100%;
+  object-fit: cover;
   border-radius: 8px;
 }
 

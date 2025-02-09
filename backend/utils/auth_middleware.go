@@ -19,6 +19,26 @@ func AuthMiddleware() gin.HandlerFunc {
 	}
 }
 
+func UserAuthMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		claims := CheckToken(c)
+		if claims == nil {
+			return // Error already set in CheckToken function
+		}
+
+		if claims.UserID == 0 || !IsUser(claims.UserID) {
+			c.JSON(http.StatusForbidden, gin.H{"error": "Access denied"})
+			c.Abort()
+			return
+		}
+
+		// Store admin ID in context
+		c.Set("userID", claims.UserID)
+		c.Next()
+	}
+}
+
 func AdminAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
@@ -28,7 +48,7 @@ func AdminAuthMiddleware() gin.HandlerFunc {
 		}
 
 		// Check if the user is an administrator
-		if !IsAdmin(claims.UserID) {
+		if claims.AdminID == 0 || !IsAdmin(claims.AdminID) {
 			c.JSON(http.StatusForbidden, gin.H{"error": "Access denied"})
 			c.Abort()
 			return

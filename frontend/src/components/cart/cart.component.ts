@@ -33,7 +33,7 @@ export class CartComponent implements OnInit {
   loadCart(): void {
     this.productService.getProductsInCart().subscribe((products) => {
       this.cartEntries = products.map((product) => ({
-        entry: { ID: 0, UserId: 0, ProductId: product.ID, Quantity: 1 }, // Default quantity (will update)
+        entry: { ID: 0, UserId: 0, ProductId: product.ID, Quantity: 1 }, // Default  (will update)
         product,
       }));
 

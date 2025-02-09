@@ -1,0 +1,46 @@
+<app-nav-bar></app-nav-bar>
+<div class="edit-product-container">
+    <h2>Edit Product</h2>
+    
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Product Name</mat-label>
+      <input matInput [(ngModel)]="product.Name" />
+    </mat-form-field>
+    
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Product Description</mat-label>
+      <textarea matInput [(ngModel)]="product.Description"></textarea>
+    </mat-form-field>
+    
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Product Price</mat-label>
+      <input matInput type="number" [(ngModel)]="product.Price" />
+    </mat-form-field>
+  
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Category</mat-label>
+      <mat-select [(ngModel)]="selectedCategory">
+        <mat-option *ngFor="let category of categories" [value]="category">
+          {{ category.Name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <!-- File Input for Image -->
+    <div class="file-input-container">
+        <mat-label>Product Image</mat-label>
+        <input type="file" (change)="onImageChange($event)" accept="image/*" />
+    </div>
+
+    <div *ngIf="product.Image">
+        <img [src]="serverUrl + uploadsUrl + product.Image" alt="Product Image" class="product-image" />
+        <div class="delete-image-container">
+            <button mat-raised-button color="warn" class="delete-image-btn" (click)="deleteImage()">Delete Image</button>
+        </div>
+    </div>
+
+    <div class="button-group">
+        <button mat-raised-button color="primary" (click)="saveProduct()">Save Product</button>
+        <button mat-raised-button color="warn" class="delete-product-btn" (click)="deleteProduct()">Delete Product</button>
+    </div>
+</div>
+  

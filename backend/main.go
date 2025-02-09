@@ -39,33 +39,33 @@ func main() {
 		api.POST("/logout", utils.AuthMiddleware(), handlers.Logout)
 		api.POST("/change-password", utils.AuthMiddleware(), handlers.ChangePassword)
 
-		api.POST("/edit-profile", utils.AuthMiddleware(), handlers.EditProfile)
+		api.POST("/edit-profile", utils.UserAuthMiddleware(), handlers.EditProfile)
 		api.GET("/users/id/:id", utils.AuthMiddleware(), handlers.GetUserByID)
 		api.GET("/users/email/:email", utils.AuthMiddleware(), handlers.GetUserByEmail)
 
-		api.POST("/payment-cards", utils.AuthMiddleware(), handlers.CreatePaymentCard)
+		api.POST("/payment-cards", utils.UserAuthMiddleware(), handlers.CreatePaymentCard)
 		api.GET("/payment-cards", utils.AuthMiddleware(), handlers.GetUserCards)
-		api.DELETE("/payment-cards/:id", utils.AuthMiddleware(), handlers.DeletePaymentCard)
+		api.DELETE("/payment-cards/:id", utils.UserAuthMiddleware(), handlers.DeletePaymentCard)
 
-		api.POST("/addresses", utils.AuthMiddleware(), handlers.CreateAddress)
+		api.POST("/addresses", utils.UserAuthMiddleware(), handlers.CreateAddress)
 		api.GET("/addresses", utils.AuthMiddleware(), handlers.GetUserAddresses)
-		api.PUT("/addresses/:id", utils.AuthMiddleware(), handlers.EditAddress)
-		api.DELETE("/addresses/:id", utils.AuthMiddleware(), handlers.DeleteAddress)
+		api.PUT("/addresses/:id", utils.UserAuthMiddleware(), handlers.EditAddress)
+		api.DELETE("/addresses/:id", utils.UserAuthMiddleware(), handlers.DeleteAddress)
 
 		api.GET("/cart", utils.AuthMiddleware(), handlers.GetAllCartEntries)
-		api.POST("/cart/:id", utils.AuthMiddleware(), handlers.AddToCart)
-		api.DELETE("/cart/:id", utils.AuthMiddleware(), handlers.RemoveFromCart)
-		api.PUT("/cart", utils.AuthMiddleware(), handlers.SetCartEntryQuantity)
-		api.DELETE("/cart/clear", utils.AuthMiddleware(), handlers.ClearCart)
+		api.POST("/cart/:id", utils.UserAuthMiddleware(), handlers.AddToCart)
+		api.DELETE("/cart/:id", utils.UserAuthMiddleware(), handlers.RemoveFromCart)
+		api.PUT("/cart", utils.UserAuthMiddleware(), handlers.SetCartEntryQuantity)
+		api.DELETE("/cart/clear", utils.UserAuthMiddleware(), handlers.ClearCart)
 
 		api.GET("/orders", utils.AuthMiddleware(), handlers.GetUserOrders)
-		api.POST("/orders", utils.AuthMiddleware(), handlers.CreateOrder)
+		api.POST("/orders", utils.UserAuthMiddleware(), handlers.CreateOrder)
 
-		api.POST("/comments", utils.AuthMiddleware(), handlers.CreateComment)
+		api.POST("/comments", utils.UserAuthMiddleware(), handlers.CreateComment)
 		api.DELETE("/comments/:id", utils.AuthMiddleware(), handlers.DeleteComment)
 
-		api.POST("/ratings", utils.AuthMiddleware(), handlers.CreateRating)
-		api.DELETE("/ratings/:id", utils.AuthMiddleware(), handlers.DeleteRating)
+		api.POST("/ratings", utils.UserAuthMiddleware(), handlers.CreateRating)
+		api.DELETE("/ratings/:id", utils.UserAuthMiddleware(), handlers.DeleteRating)
 
 		// Public category routes
 		api.GET("/categories", handlers.GetCategories)
@@ -79,8 +79,16 @@ func main() {
 		admin.Use(utils.AdminAuthMiddleware()) // Require admin token
 		{
 			admin.POST("/categories", handlers.CreateCategory)
-			admin.PUT("/categories/:id", handlers.UpdateCategory)
-			admin.DELETE("/categories/:id", handlers.DeleteCategory)
+			admin.PUT("/categories/id/:id", handlers.UpdateCategory)
+			admin.DELETE("/categories/id/:id", handlers.DeleteCategory)
+
+			admin.POST("/products", handlers.CreateProduct)
+			admin.PUT("/products/id/:id", handlers.EditProduct)
+			admin.DELETE("/products/id/:id", handlers.DeleteProduct)
+			admin.POST("/products/image/id/:id", handlers.AddPicture)
+			admin.DELETE("/products/image/id/:id", handlers.DeletePicture)
+
+			admin.POST("/register-admin", handlers.RegisterAdmin)
 		}
 	}
 

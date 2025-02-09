@@ -9,8 +9,9 @@
   <button *ngIf="isUser" mat-button routerLink="/my-orders" routerLinkActive="active-link">My orders</button>
 
   <!-- Only visible to logged in administrator -->
-  <button *ngIf="isAdmin" mat-button routerLink="/manage-products" routerLinkActive="active-link">Manage Products</button>
+  <button *ngIf="isAdmin" mat-button routerLink="/category-management" routerLinkActive="active-link">Manage Categories</button>
   <button *ngIf="isAdmin" mat-button routerLink="/add-admin" routerLinkActive="active-link">Add admin</button>
+  <button *ngIf="isAdmin" mat-button routerLink="/create-product" routerLinkActive="active-link">Create Product</button>
 
   <button *ngIf="isLoggedIn" mat-button routerLink="/change-password" routerLinkActive="active-link">Change Password</button>
 

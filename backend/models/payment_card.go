@@ -12,6 +12,4 @@ type PaymentCard struct {
 	CVC         string `gorm:"size:3;not null" json:"Cvc"`
 	ExpiryMonth int    `gorm:"not null" json:"ExpiryMonth"`
 	ExpiryYear  int    `gorm:"not null" json:"ExpiryYear"`
-
-	//User User `gorm:"foreignKey:UserID"`
 }

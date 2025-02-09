@@ -12,10 +12,6 @@ type User struct {
 	Password string `gorm:"not null" json:"-"`
 	Name     string `json:"Name"`
 	Surname  string `json:"Surname"`
-
-	//Addresses []Address `gorm:"foreignKey:UserID"` // One-to-Many relationship with Address
-	//PaymentCards []PaymentCard `gorm:"foreignKey:UserID"` // One-to-Many relationship with PaymentMethod
-	//Orders   []Order  `gorm:"foreignKey:UserID"` // One-to-Many relationship with Order
 }
 
 func (u *User) HashUserPassword() error {

@@ -1,0 +1,52 @@
+<app-nav-bar></app-nav-bar>
+<div class="product-container">
+  <div class="add-product-modal">
+    <div class="add-product-content">
+      <h2>Add New Product</h2>
+
+      <form (ngSubmit)="onSubmit()" #productForm="ngForm">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Name</mat-label>
+          <input matInput type="text" [(ngModel)]="newProduct.Name" name="Name" required #name="ngModel">
+          <mat-error *ngIf="name.invalid && name.touched">Name is required.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Description</mat-label>
+          <input matInput type="text" [(ngModel)]="newProduct.Description" name="Description" required #description="ngModel">
+          <mat-error *ngIf="description.invalid && description.touched">Description is required.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Price</mat-label>
+          <input matInput type="number" [(ngModel)]="newProduct.Price" name="Price" required min="0" #price="ngModel">
+          <mat-error *ngIf="price.invalid && price.touched">Enter a valid price.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Quantity</mat-label>
+            <input matInput type="number" [(ngModel)]="newProduct.Quantity" name="Quantity" required min="0" #price="ngModel">
+            <mat-error *ngIf="price.invalid && price.touched">Enter a valid quantity.</mat-error>
+          </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Category</mat-label>
+          <mat-select [(ngModel)]="newProduct.CategoryId" name="Category" required #category="ngModel">
+            <mat-option *ngFor="let cat of categories" [value]="cat.ID">{{ cat.Name }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="category.invalid && category.touched">Category is required.</mat-error>
+        </mat-form-field>
+
+        <div class="file-input-container">
+            <mat-label>Product Image</mat-label>
+            <input type="file" (change)="onImageChange($event)" accept="image/*" />
+          </div>
+          
+
+        <div class="modal-actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="productForm.invalid">Add Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

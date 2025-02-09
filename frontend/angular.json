@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "gym-management-admin-dashboard": {
+    "online-shop": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -76,10 +76,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "gym-management-admin-dashboard:build:production"
+              "buildTarget": "online-shop:build:production"
             },
             "development": {
-              "buildTarget": "gym-management-admin-dashboard:build:development"
+              "buildTarget": "online-shop:build:development"
             }
           },
           "defaultConfiguration": "development"

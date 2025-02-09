@@ -126,7 +126,6 @@ mat-form-field {
   margin-top: 15px;
 }
 
-/* Address Layout */
 .address-info {
   display: flex;
   justify-content: space-between; /* Align address to left, buttons to right */
@@ -137,13 +136,13 @@ mat-form-field {
 }
 
 .address-info .address-details {
-  flex-grow: 1; /* Address info takes the available space */
+  flex-grow: 1;
 }
 
 .address-info .address-actions {
   display: flex;
   gap: 10px;
-  justify-content: flex-end; /* Align buttons to the right */
+  justify-content: flex-end;
 }
 
 .address-info p {

@@ -13,7 +13,7 @@ import (
 var DB *gorm.DB
 
 func InitDB() {
-	dsn := "host=localhost user=postgres password=postgres dbname=ShopDB port=5432 sslmode=disable TimeZone=UTC"
+	dsn := "host=localhost user=postgres password=postgres dbname=shop port=5432 sslmode=disable TimeZone=UTC"
 	var err error
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -33,7 +33,6 @@ func InitDB() {
 		&models.Order{},
 		&models.OrderItem{},
 		&models.Rating{},
-		// more models here
 	}
 
 	err = DB.AutoMigrate(modelsToMigrate...)

@@ -160,10 +160,8 @@ export class MyProfileComponent implements OnDestroy {
 
   onSaveAddress() {
     if (this.editAddressMode && this.editingAddressId !== null) {
-      // Update existing address
       this.onEditAddress();
     } else {
-      // Add new address
       this.onAddAddress();
     }
   }

@@ -1,0 +1,35 @@
+.create-product {
+    max-width: 600px;
+    margin: 0 auto;
+    margin-top: 30px;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  label {
+    margin-bottom: 8px;
+  }
+  
+  input, textarea, select {
+    margin-bottom: 16px;
+    padding: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  button {
+    margin-top: 16px;
+  }
+  
+  .file-input-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+  }
+  
+  .file-input-container input[type="file"] {
+    margin-top: 8px;
+  }
+  

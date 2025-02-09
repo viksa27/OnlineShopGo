@@ -10,13 +10,20 @@ import (
 
 var jwtSecret = []byte("TKro3oiQodzp1YF49yVKc5YIiZp0jQJSlDmpub3PWsE=")
 
-func GenerateJWT(userID uint) (string, error) {
+func GenerateJWT(userID uint, admin bool) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := &dto.JwtClaims{
-		UserID: userID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},
+	}
+
+	if admin {
+		claims.AdminID = userID
+		claims.UserID = 0
+	} else {
+		claims.AdminID = 0
+		claims.UserID = userID
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

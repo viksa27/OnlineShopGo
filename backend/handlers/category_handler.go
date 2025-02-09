@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"OnlineShopGo/database"
+	"OnlineShopGo/dto"
 	"OnlineShopGo/models"
 	"net/http"
 	"strconv"
@@ -10,11 +11,15 @@ import (
 )
 
 func CreateCategory(c *gin.Context) {
-	var category models.Category
-
-	if err := c.ShouldBindJSON(&category); err != nil {
+	var req dto.CategoryRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
+	}
+
+	category := models.Category{
+		Name:        req.Name,
+		Description: req.Description,
 	}
 
 	if err := database.DB.Create(&category).Error; err != nil {
@@ -35,15 +40,19 @@ func UpdateCategory(c *gin.Context) {
 		return
 	}
 
+	var req dto.CategoryRequest
+	if err = c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+
 	if err = database.DB.First(&category, uint(id)).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Category not found"})
 		return
 	}
 
-	if err = c.ShouldBindJSON(&category); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
-		return
-	}
+	category.Name = req.Name
+	category.Description = req.Description
 
 	if err = database.DB.Save(&category).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not update category"})
@@ -54,7 +63,6 @@ func UpdateCategory(c *gin.Context) {
 }
 
 func DeleteCategory(c *gin.Context) {
-	var category models.Category
 	idStr := c.Param("id")
 
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -63,13 +71,8 @@ func DeleteCategory(c *gin.Context) {
 		return
 	}
 
-	if err := database.DB.First(&category, uint(id)).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Category not found"})
-		return
-	}
-
-	if err := database.DB.Delete(&category).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not delete category"})
+	if err = database.DB.Delete(&models.Category{}, id).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete category"})
 		return
 	}
 

@@ -1,0 +1,147 @@
+.category-management-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.category-list {
+  margin-top: 20px;
+}
+
+.category-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 60px;
+}
+
+.category-name {
+  font-size: 16px;
+  color: #555;
+  flex-grow: 1;
+}
+
+.category-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.edit-button, .delete-button {
+  padding: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #007bff;
+}
+
+.delete-button {
+  color: #ff4d4f;
+}
+
+button[mat-raised-button] {
+  margin-top: 20px;
+  font-size: 14px;
+  padding: 10px 20px;
+}
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.dialog-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-height: 80%;
+  overflow-y: auto;
+}
+
+.dialog-content h3 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #333;
+}
+
+mat-form-field {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button[mat-raised-button] {
+  width: 100%;
+  margin-top: 10px;
+  font-size: 14px;
+  padding: 12px 0;
+}
+
+button[mat-raised-button][color="warn"] {
+  background-color: #ff4d4f;
+  color: white;
+}
+
+button[mat-raised-button][color="primary"] {
+  background-color: #007bff;
+  color: white;
+}
+
+button[mat-icon-button] {
+  padding: 5px;
+  background-color: #ff4d4f;
+  color: white;
+  border-radius: 50%;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .category-management-container {
+    padding: 15px;
+  }
+
+  .category-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  button[mat-raised-button] {
+    width: 100%;
+  }
+
+  .dialog-content {
+    width: 90%;
+  }
+}

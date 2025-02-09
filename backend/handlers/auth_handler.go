@@ -4,7 +4,6 @@ import (
 	"OnlineShopGo/models"
 	"OnlineShopGo/utils"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 	"time"
 
@@ -49,6 +48,12 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	var existingAdmin models.Administrator
+	if err := database.DB.Where("email = ?", req.Email).First(&existingAdmin).Error; err == nil {
+		c.JSON(http.StatusConflict, gin.H{"error": "Email is already taken"})
+		return
+	}
+
 	user := models.User{
 		Email:    req.Email,
 		Password: req.Password, // Will hash password before saving
@@ -57,19 +62,52 @@ func Register(c *gin.Context) {
 	}
 
 	if err := database.DB.Create(&user).Error; err != nil {
-		log.Println("Error saving user:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not register user"})
 		return
 	}
 
-	token, err := utils.GenerateJWT(user.ID)
+	token, err := utils.GenerateJWT(user.ID, false)
 	if err != nil {
-		log.Println("Error generating token:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not generate token"})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"token": token, "role": "user"})
+}
+
+func RegisterAdmin(c *gin.Context) {
+	var req dto.RegisterRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	// Check if the email already exists
+	var existingUser models.User
+	if err := database.DB.Where("email = ?", req.Email).First(&existingUser).Error; err == nil {
+		c.JSON(http.StatusConflict, gin.H{"error": "Email is already taken"})
+		return
+	}
+
+	var existingAdmin models.Administrator
+	if err := database.DB.Where("email = ?", req.Email).First(&existingAdmin).Error; err == nil {
+		c.JSON(http.StatusConflict, gin.H{"error": "Email is already taken"})
+		return
+	}
+
+	admin := models.Administrator{
+		Email:    req.Email,
+		Password: req.Password, // Will hash password before saving
+		Name:     req.Name,
+		Surname:  req.Surname,
+	}
+
+	if err := database.DB.Create(&admin).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not register admin"})
+		return
+	}
+
+	c.JSON(http.StatusOK, admin)
 }
 
 func ChangePassword(c *gin.Context) {

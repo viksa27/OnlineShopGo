@@ -101,6 +101,9 @@ export class ProductDetailsComponent implements OnInit {
 
     this.commentService.createComment(request).subscribe({
       next: (comment) => {
+        if (this.product && !this.product.Comments) {
+          this.product.Comments = [];
+        }
         this.product?.Comments.push(comment);
         this.newComment = '';
         this.snackBar.open('Comment posted!', 'Close', { duration: 2000 });
@@ -122,6 +125,9 @@ export class ProductDetailsComponent implements OnInit {
 
     this.ratingService.createRating(request).subscribe({
       next: (rating) => {
+        if (this.product && !this.product.Ratings) {
+          this.product.Ratings = [];
+        }
         this.product?.Ratings.push(rating);
         this.newRating = 0;
         this.snackBar.open('Rating submitted!', 'Close', { duration: 2000 });

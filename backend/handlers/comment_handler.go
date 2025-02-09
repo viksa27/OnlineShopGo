@@ -84,6 +84,5 @@ func DeleteComment(c *gin.Context) {
 		return
 	}
 
-	// Return a success response
 	c.JSON(http.StatusOK, gin.H{"message": "Comment deleted successfully"})
 }
