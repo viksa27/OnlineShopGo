@@ -4,6 +4,7 @@ import (
 	"OnlineShopGo/database"
 	"OnlineShopGo/dto"
 	"OnlineShopGo/models"
+	"OnlineShopGo/models/utils"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
@@ -58,4 +59,63 @@ func CheckToken(c *gin.Context) *dto.JwtClaims {
 	}
 
 	return claims
+}
+
+func ChangePasswordUser(c *gin.Context, request dto.ChangePasswordRequest) {
+	var user models.User
+	if err := database.DB.Where("email = ?", request.Email).First(&user).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+
+	// Verify current password
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(request.CurrentPassword)); err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Current password is incorrect"})
+		return
+	}
+
+	hashedPw, err := utils.HashPassword(request.NewPassword)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Couldn't hash password"})
+		return
+	}
+
+	database.DB.Model(&user).Update("Password", string(hashedPw))
+
+	c.JSON(http.StatusOK, gin.H{"message": "Password changed successfully"})
+}
+
+func ChangePasswordAdministrator(c *gin.Context, request dto.ChangePasswordRequest) {
+	var admin models.Administrator
+	if err := database.DB.Where("email = ?", request.Email).First(&admin).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Administrator not found"})
+		return
+	}
+
+	// Verify current password
+	if err := bcrypt.CompareHashAndPassword([]byte(admin.Password), []byte(request.CurrentPassword)); err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Current password is incorrect"})
+		return
+	}
+
+	admin.Password = request.NewPassword
+	database.DB.Save(&admin)
+
+	c.JSON(http.StatusOK, gin.H{"message": "Password changed successfully"})
+}
+
+func GetUserIdFromContext(c *gin.Context) (uint, bool) {
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User ID not found"})
+		return 0, false
+	}
+
+	userIDUint, ok := userID.(uint)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID type"})
+		return 0, false
+	}
+
+	return userIDUint, true
 }

@@ -69,7 +69,41 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	c.JSON(http.StatusOK, gin.H{"token": token, "role": "user"})
+}
+
+func ChangePassword(c *gin.Context) {
+	var req dto.ChangePasswordRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	tokenStr := c.GetHeader("Authorization")
+
+	if tokenStr == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Missing token"})
+		return
+	}
+
+	const prefix = "Bearer "
+	if len(tokenStr) > len(prefix) && tokenStr[:len(prefix)] == prefix {
+		tokenStr = tokenStr[len(prefix):]
+	}
+
+	_, err := utils.ValidateJWT(tokenStr)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+		return
+	}
+
+	if req.Role == "user" {
+		utils.ChangePasswordUser(c, req)
+	} else if req.Role == "administrator" {
+		utils.ChangePasswordAdministrator(c, req)
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid role"})
+	}
 }
 
 func Logout(c *gin.Context) {

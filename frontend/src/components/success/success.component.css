@@ -1,0 +1,30 @@
+.payment-success-container {
+  text-align: center;
+  padding: 2rem;
+  border-radius: 8px;
+  background: var(--mat-sys-primary-container);
+  max-width: 400px;
+  margin: 50px auto;
+}
+
+.success-icon {
+  /*font-size: 64px;*/
+  color: var(--mat-sys-primary);
+  margin-bottom: 1rem;
+}
+
+.success-title {
+  font-size: 24px;
+  color: var(--mat-sys-primary);
+  margin-bottom: 0.5rem;
+}
+
+.success-message {
+  font-size: 16px;
+  color: #555;
+  margin: 0;
+}
+
+.back-btn {
+  margin-top: 16px;
+}

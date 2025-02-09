@@ -28,6 +28,10 @@ func InitDB() {
 		&models.Comment{},
 		&models.PaymentCard{},
 		&models.Product{},
+		&models.Address{},
+		&models.CartEntry{},
+		&models.Order{},
+		&models.OrderItem{},
 		// more models here
 	}
 

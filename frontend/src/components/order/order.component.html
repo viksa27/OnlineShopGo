@@ -1,0 +1,128 @@
+<app-nav-bar></app-nav-bar>
+<div class="order-container">
+    <h2>Checkout</h2>
+  
+    <!-- Cart Items -->
+    <div *ngIf="cartEntries.length > 0" class="cart-section">
+      <h3>Your Cart</h3>
+      <ul class="cart-list">
+        <li *ngFor="let entry of cartEntries" class="cart-item">
+          {{ getProductName(entry.ProductId) }} - {{ entry.Quantity }} x {{ getProductPrice(entry.ProductId) | currency }}
+        </li>
+      </ul>
+  
+      <!-- Payment Details -->
+      <h3>Payment Details</h3>
+      <div class="payment-section">
+        <div class="payment-option">
+          <label>
+            <input type="radio" [(ngModel)]="useNewCard" [value]="false" name="cardOption"> Use Existing Card
+          </label>
+          <select [(ngModel)]="selectedCard" *ngIf="!useNewCard" class="card-select">
+            <option *ngFor="let card of paymentCards" [value]="formatCard(card)">
+              {{ card.Name }} - {{ card.Number | slice: -4 }} (Expires: {{ card.ExpiryMonth }}/{{ card.ExpiryYear }})
+            </option>
+          </select>
+        </div>
+        <div class="payment-option">
+          <label>
+            <input type="radio" [(ngModel)]="useNewCard" [value]="true" name="cardOption"> Use New Card
+          </label>
+          <div *ngIf="useNewCard" class="new-card-form">
+            <div class="card-form">
+              <mat-form-field appearance="fill">
+                <mat-label>Cardholder Name</mat-label>
+                <input matInput type="text" [(ngModel)]="newCard.Name" name="name" required #name="ngModel">
+                <mat-error *ngIf="name.invalid && name.touched">Name is required.</mat-error>
+              </mat-form-field>
+  
+              <mat-form-field appearance="fill">
+                <mat-label>Card Number</mat-label>
+                <input matInput type="text" [(ngModel)]="newCard.Number" name="number" required minlength="16" maxlength="16" pattern="^[0-9]{16}$" #number="ngModel">
+                <mat-error *ngIf="number.invalid && number.touched">Enter a valid 16-digit card number.</mat-error>
+              </mat-form-field>
+  
+              <mat-form-field appearance="fill">
+                <mat-label>CVC</mat-label>
+                <input matInput type="text" [(ngModel)]="newCard.Cvc" name="cvc" required minlength="3" maxlength="3" pattern="^[0-9]{3}$" #cvc="ngModel">
+                <mat-error *ngIf="cvc.invalid && cvc.touched">Enter a valid 3-digit CVC.</mat-error>
+              </mat-form-field>
+  
+              <mat-form-field appearance="fill">
+                <mat-label>Expiry Month</mat-label>
+                <input matInput type="number" [(ngModel)]="newCard.ExpiryMonth" name="expiryMonth" required min="1" max="12" #expiryMonth="ngModel">
+                <mat-error *ngIf="expiryMonth.invalid && expiryMonth.touched">Enter a valid month (1-12).</mat-error>
+              </mat-form-field>
+  
+              <mat-form-field appearance="fill">
+                <mat-label>Expiry Year</mat-label>
+                <input matInput type="number" [(ngModel)]="newCard.ExpiryYear" name="expiryYear" required min="2024" #expiryYear="ngModel">
+                <mat-error *ngIf="expiryYear.invalid && expiryYear.touched">Enter a valid expiry year.</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Shipping Address -->
+      <h3>Shipping Address</h3>
+      <div class="address-section">
+        <div class="address-option">
+          <label>
+            <input type="radio" [(ngModel)]="useNewAddress" [value]="false" name="addressOption"> Use Existing Address
+          </label>
+          <select [(ngModel)]="selectedAddress" *ngIf="!useNewAddress" class="address-select">
+            <option *ngFor="let address of addresses" [value]="formatAddress(address)">
+              {{ address.Street }}, {{ address.City }}, {{ address.State }}, {{ address.ZipCode }}, {{ address.Country }}
+            </option>
+          </select>
+        </div>
+        <div class="address-option">
+          <label>
+            <input type="radio" [(ngModel)]="useNewAddress" [value]="true" name="addressOption"> Use New Address
+          </label>
+          <div *ngIf="useNewAddress" class="new-address-form">
+            <div class="address-form">
+              <mat-form-field appearance="outline">
+                <mat-label>Street</mat-label>
+                <input matInput [(ngModel)]="newAddress.Street" name="street" required #street="ngModel">
+                <mat-error *ngIf="street.invalid && street.touched">Street is required.</mat-error>
+              </mat-form-field>
+  
+              <mat-form-field appearance="outline">
+                <mat-label>City</mat-label>
+                <input matInput [(ngModel)]="newAddress.City" name="city" required #city="ngModel">
+                <mat-error *ngIf="city.invalid && city.touched">City is required.</mat-error>
+              </mat-form-field>
+  
+              <mat-form-field appearance="outline">
+                <mat-label>State</mat-label>
+                <input matInput [(ngModel)]="newAddress.State" name="state" required #state="ngModel">
+                <mat-error *ngIf="state.invalid && state.touched">State is required.</mat-error>
+              </mat-form-field>
+  
+              <mat-form-field appearance="outline">
+                <mat-label>Zip Code</mat-label>
+                <input matInput [(ngModel)]="newAddress.ZipCode" name="zipCode" required #zipCode="ngModel">
+                <mat-error *ngIf="zipCode.invalid && zipCode.touched">Zip Code is required.</mat-error>
+              </mat-form-field>
+  
+              <mat-form-field appearance="outline">
+                <mat-label>Country</mat-label>
+                <input matInput [(ngModel)]="newAddress.Country" name="country" required #country="ngModel">
+                <mat-error *ngIf="country.invalid && country.touched">Country is required.</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Place Order Button -->
+      <button class="place-order-button" (click)="placeOrder()">Place Order</button>
+    </div>
+  
+    <!-- Empty Cart Message -->
+    <div *ngIf="cartEntries.length === 0" class="empty-cart">
+      <p>Your cart is empty.</p>
+    </div>
+  </div>

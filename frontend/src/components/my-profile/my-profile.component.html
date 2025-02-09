@@ -1,0 +1,175 @@
+<app-nav-bar></app-nav-bar>
+<div class="profile-container">
+  <h1>My Profile</h1>
+
+  <form (ngSubmit)="onSubmit()" #profileForm="ngForm">
+    <div class="form-group">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" [(ngModel)]="profile.email" name="email" required email #email="ngModel">
+        <mat-error *ngIf="email.invalid && email.touched">
+          Please enter a valid email.
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-group">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" [(ngModel)]="profile.name" name="name">
+      </mat-form-field>
+    </div>
+
+    <div class="form-group">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Surname</mat-label>
+        <input matInput type="text" [(ngModel)]="profile.surname" name="surname">
+      </mat-form-field>
+    </div>
+
+    <div class="form-group">
+      <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid">
+        Save
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="profile-container">
+  <!-- Payment Cards Section -->
+  <div class="cards-container">
+    <h2>Payment Cards</h2>
+  
+    <!-- Cards List -->
+    <div *ngFor="let card of paymentCards" class="card">
+      <div class="card-info">
+        <p><strong>Name:</strong> {{ card.Name }}</p>
+        <p><strong>Card Number:</strong> 
+          <span *ngIf="!card.showFullNumber">**** **** **** {{ card.Number.slice(-4) }}</span>
+          <span *ngIf="card.showFullNumber">{{ card.Number }}</span>
+        </p>
+        <p><strong>Expiry:</strong> {{ card.ExpiryMonth }}/{{ card.ExpiryYear }}</p>
+      </div>
+      <div class="card-actions">
+        <button mat-raised-button color="accent" (click)="card.showFullNumber = !card.showFullNumber">
+          {{ card.showFullNumber ? 'Hide' : 'Show' }}
+        </button>
+        <button mat-raised-button color="warn" (click)="deleteCard(card.ID)">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Card Button -->
+  <button mat-raised-button color="primary" (click)="showAddCardForm = true">Add Card</button>
+
+  <!-- Add Card Form (Popup) -->
+  <div class="add-card-modal" *ngIf="showAddCardForm">
+    <div class="add-card-content">
+      <h2>Add Payment Card</h2>
+      
+      <form (ngSubmit)="onAddCard()" #addCardForm="ngForm">
+        <mat-form-field appearance="fill">
+          <mat-label>Cardholder Name</mat-label>
+          <input matInput type="text" [(ngModel)]="newCard.Name" name="name" required #name="ngModel">
+          <mat-error *ngIf="name.invalid && name.touched">Name is required.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Card Number</mat-label>
+          <input matInput type="text" [(ngModel)]="newCard.Number" name="number" required minlength="16" maxlength="16" pattern="^[0-9]{16}$" #number="ngModel">
+          <mat-error *ngIf="number.invalid && number.touched">Enter a valid 16-digit card number.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>CVC</mat-label>
+          <input matInput type="text" [(ngModel)]="newCard.Cvc" name="cvc" required minlength="3" maxlength="3" pattern="^[0-9]{3}$" #cvc="ngModel">
+          <mat-error *ngIf="cvc.invalid && cvc.touched">Enter a valid 3-digit CVC.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Expiry Month</mat-label>
+          <input matInput type="number" [(ngModel)]="newCard.ExpiryMonth" name="expiryMonth" required min="1" max="12" #expiryMonth="ngModel">
+          <mat-error *ngIf="expiryMonth.invalid && expiryMonth.touched">Enter a valid month (1-12).</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Expiry Year</mat-label>
+          <input matInput type="number" [(ngModel)]="newCard.ExpiryYear" name="expiryYear" required min="2024" #expiryYear="ngModel">
+          <mat-error *ngIf="expiryYear.invalid && expiryYear.touched">Enter a valid expiry year.</mat-error>
+        </mat-form-field>
+
+        <div class="modal-actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="addCardForm.invalid">Add Card</button>
+          <button mat-raised-button color="warn" type="button" (click)="showAddCardForm = false">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  
+</div>
+
+<div class="profile-container">
+  <div class="addresses-container">
+    <h2>Addresses</h2>
+
+    <div *ngFor="let address of addresses" class="address">
+      <div class="address-info">
+        <div class="address-details">
+          <p><strong>Street:</strong> {{ address.Street }}</p>
+          <p><strong>City:</strong> {{ address.City }}</p>
+          <p><strong>State:</strong> {{ address.State }}</p>
+          <p><strong>Zip Code:</strong> {{ address.ZipCode }}</p>
+          <p><strong>Country:</strong> {{ address.Country }}</p>
+        </div>
+        <div class="address-actions">
+          <button mat-raised-button color="primary" (click)="editAddress(address, address.ID)">Edit</button>
+          <button mat-raised-button color="warn" (click)="deleteAddress(address.ID)">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <button mat-raised-button color="primary" (click)="showAddAddressForm = true">Add New Address</button>
+  
+    <div class="add-address-modal" *ngIf="showAddAddressForm">
+      <div class="add-address-content">
+        <h3>{{ editAddressMode ? 'Edit Address' : 'Add Address' }}</h3>
+        <form (ngSubmit)="onSaveAddress()" #addressForm="ngForm">
+          <mat-form-field appearance="outline">
+            <mat-label>Street</mat-label>
+            <input matInput [(ngModel)]="newAddress.street" name="street" required>
+          </mat-form-field>
+    
+          <mat-form-field appearance="outline">
+            <mat-label>City</mat-label>
+            <input matInput [(ngModel)]="newAddress.city" name="city" required>
+          </mat-form-field>
+    
+          <mat-form-field appearance="outline">
+            <mat-label>State</mat-label>
+            <input matInput [(ngModel)]="newAddress.state" name="state" required>
+          </mat-form-field>
+    
+          <mat-form-field appearance="outline">
+            <mat-label>Zip Code</mat-label>
+            <input matInput [(ngModel)]="newAddress.zip_code" name="zip_code" required>
+          </mat-form-field>
+    
+          <mat-form-field appearance="outline">
+            <mat-label>Country</mat-label>
+            <input matInput [(ngModel)]="newAddress.country" name="country" required>
+          </mat-form-field>
+    
+          <div class="modal-actions">
+            <button mat-raised-button color="primary" type="submit">Save Address</button>
+            <button mat-raised-button color="warn" type="button" (click)="resetAddressForm()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+  </div>
+  
+  
+
+</div>

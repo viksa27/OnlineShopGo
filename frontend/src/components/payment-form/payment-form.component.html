@@ -1,0 +1,6 @@
+<app-nav-bar></app-nav-bar>
+<div class="container">
+<div id="payment-element"></div>
+<div id="error-message" style="color: red;"></div>
+<button id="submit" (click)="submitPayment()" [disabled]="!stripe || !elements" mat-flat-button>Submit Payment</button>
+</div>

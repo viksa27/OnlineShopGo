@@ -1,0 +1,18 @@
+<mat-toolbar>
+  <span class="spacer"></span>
+
+  <button mat-button routerLink="/products" routerLinkActive="active-link">Home</button>
+
+  <!-- Only visible to logged in user -->
+  <button *ngIf="isUser" mat-button routerLink="/cart" routerLinkActive="active-link">Cart</button>
+  <button *ngIf="isUser" mat-button routerLink="/my-profile" routerLinkActive="active-link">My profile</button>
+  <button *ngIf="isUser" mat-button routerLink="/my-orders" routerLinkActive="active-link">My orders</button>
+
+  <!-- Only visible to logged in administrator -->
+  <button *ngIf="isAdmin" mat-button routerLink="/manage-products" routerLinkActive="active-link">Manage Products</button>
+  <button *ngIf="isAdmin" mat-button routerLink="/add-admin" routerLinkActive="active-link">Add admin</button>
+
+  <button *ngIf="isLoggedIn" mat-button routerLink="/change-password" routerLinkActive="active-link">Change Password</button>
+
+  <button mat-button routerLinkActive="active-link" routerLink="/login" (click)="onAuthenticate()">{{ authService.isAuthenticated() ? "Logout" : "Login" }}</button>
+</mat-toolbar>

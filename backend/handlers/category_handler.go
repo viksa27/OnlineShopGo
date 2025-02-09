@@ -4,6 +4,7 @@ import (
 	"OnlineShopGo/database"
 	"OnlineShopGo/models"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,22 +27,25 @@ func CreateCategory(c *gin.Context) {
 
 func UpdateCategory(c *gin.Context) {
 	var category models.Category
-	id := c.Param("id")
+	idStr := c.Param("id")
 
-	// Find category
-	if err := database.DB.First(&category, id).Error; err != nil {
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Category ID"})
+		return
+	}
+
+	if err = database.DB.First(&category, uint(id)).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Category not found"})
 		return
 	}
 
-	// Bind request data
-	if err := c.ShouldBindJSON(&category); err != nil {
+	if err = c.ShouldBindJSON(&category); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
 	}
 
-	// Save updates
-	if err := database.DB.Save(&category).Error; err != nil {
+	if err = database.DB.Save(&category).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not update category"})
 		return
 	}
@@ -51,15 +55,19 @@ func UpdateCategory(c *gin.Context) {
 
 func DeleteCategory(c *gin.Context) {
 	var category models.Category
-	id := c.Param("id")
+	idStr := c.Param("id")
 
-	// Find category
-	if err := database.DB.First(&category, id).Error; err != nil {
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Category ID"})
+		return
+	}
+
+	if err := database.DB.First(&category, uint(id)).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Category not found"})
 		return
 	}
 
-	// Delete
 	if err := database.DB.Delete(&category).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not delete category"})
 		return

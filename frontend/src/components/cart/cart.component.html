@@ -1,0 +1,42 @@
+<app-nav-bar></app-nav-bar>
+<div class="cart-container">
+  <h2>Shopping Cart</h2>
+
+  <div *ngIf="cartEntries.length === 0">
+    <p>Your cart is empty.</p>
+  </div>
+
+  <div *ngFor="let cartItem of cartEntries" class="cart-item">
+    <mat-card>
+      <mat-card-header class="bold-header">
+        {{ cartItem.product.Name }}
+      </mat-card-header>
+
+      <mat-card-content class="content-wrapper">
+        <div class="image-container">
+          <img *ngIf="cartItem.product.Image" 
+               [src]="serverUrl + uploadsUrl + cartItem.product.Image"
+               alt="{{ cartItem.product.Name }}" 
+               class="product-image">
+        </div>
+        
+        <p class="product-price"><strong>Price:</strong> ${{ cartItem.product.Price }}</p>
+        <p><strong>Quantity:</strong></p>
+
+        <div class="quantity-controls">
+          <button (click)="decrementQuantity(cartItem)">-</button>
+          <input type="number" [(ngModel)]="cartItem.entry.Quantity" (change)="updateQuantity(cartItem, cartItem.entry.Quantity)" />
+          <button (click)="incrementQuantity(cartItem)">+</button>
+        </div>
+      </mat-card-content>
+
+      <button (click)="removeFromCart(cartItem.product.ID)" class="remove-btn">Remove</button>
+    </mat-card>
+  </div>
+
+  <div class="cart-actions">
+    <h3>Total Price: ${{ totalPrice }}</h3>
+    <button (click)="clearCart()" class="clear-btn">Clear Cart</button>
+    <button (click)="placeOrder()" class="order-btn">Order</button>
+  </div>
+</div>

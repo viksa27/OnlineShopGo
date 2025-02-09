@@ -1,0 +1,40 @@
+<app-nav-bar></app-nav-bar>
+<div class="my-orders-container">
+    <h2>My Orders</h2>
+
+    <!-- List of Orders -->
+    <div *ngIf="orders.length > 0; else noOrders" class="orders-list">
+        <div *ngFor="let order of orders" class="order-card" [class.expanded]="isOrderExpanded(order.ID)">
+        <!-- Order Summary -->
+        <div class="order-summary" (click)="toggleOrderDetails(order.ID)">
+            <div class="order-header">
+            <span class="order-id">Order #{{ order.ID }}</span>
+            <span class="order-total">Total: {{ calculateOrderTotal(order) | currency }}</span>
+            </div>
+            <div class="order-details">
+            <span>Shipping Address: {{ order.ShippingAddress }}</span>
+            </div>
+        </div>
+
+        <!-- Order Items (Expanded Details) -->
+        <div *ngIf="isOrderExpanded(order.ID)" class="order-items">
+            <h3>Order Items</h3>
+            <div *ngFor="let item of order.Items" class="order-item">
+            <div class="product-info">
+                <span class="product-name">{{ productDetails[item.ProductId]?.Name || 'Loading...' }}</span>
+                <span class="product-quantity">Quantity: {{ item.Quantity }}</span>
+                <span class="product-price">Price: {{ item.Price | currency }}</span>
+            </div>
+            <div class="item-total">
+                <span>Total: {{ item.Price * item.Quantity | currency }}</span>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- No Orders Message -->
+    <ng-template #noOrders>
+        <p class="no-orders">You have no orders yet.</p>
+    </ng-template>
+</div>

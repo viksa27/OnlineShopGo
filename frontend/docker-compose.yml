@@ -1,0 +1,14 @@
+version: '3'
+services:
+  angular:
+    image: angularfrontend:1
+    container_name: angular
+    ports:
+      - "8000:80"
+    restart: always
+    networks:
+      - angularnetwork
+
+networks:
+  angularnetwork:
+    driver: bridge

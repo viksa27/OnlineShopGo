@@ -3,20 +3,20 @@ package handlers
 import (
 	"OnlineShopGo/database"
 	"OnlineShopGo/models"
+	"OnlineShopGo/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 func CreateProduct(c *gin.Context) {
 	var product models.Product
 
-	// Bind JSON
 	if err := c.ShouldBindJSON(&product); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Save to DB
 	if err := database.DB.Create(&product).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create product"})
 		return
@@ -26,22 +26,25 @@ func CreateProduct(c *gin.Context) {
 }
 
 func EditProduct(c *gin.Context) {
-	productID := c.Param("id")
+	productIDStr := c.Param("id")
 	var product models.Product
 
-	// Check if product exists
-	if err := database.DB.First(&product, productID).Error; err != nil {
+	productID, err := strconv.ParseUint(productIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Product ID"})
+		return
+	}
+
+	if err := database.DB.First(&product, uint(productID)).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Product not found"})
 		return
 	}
 
-	// Bind JSON updates
 	if err := c.ShouldBindJSON(&product); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Update DB
 	if err := database.DB.Save(&product).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update product"})
 		return
@@ -51,9 +54,14 @@ func EditProduct(c *gin.Context) {
 }
 
 func DeleteProduct(c *gin.Context) {
-	productID := c.Param("id")
+	productIDStr := c.Param("id")
 
-	// Delete from DB
+	productID, err := strconv.ParseUint(productIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Product ID"})
+		return
+	}
+
 	if err := database.DB.Delete(&models.Product{}, productID).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete product"})
 		return
@@ -62,15 +70,17 @@ func DeleteProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Product deleted successfully"})
 }
 
-// AddProductToCart - Empty function (to be implemented later)
-func AddProductToCart(c *gin.Context) {
-	// Implementation pending
-}
-
 func GetProductByID(c *gin.Context) {
-	productID := c.Param("id")
+	productIDStr := c.Param("id")
 	var product models.Product
 
+	productID, err := strconv.ParseUint(productIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Product ID"})
+		return
+	}
+
+	// Get the query parameter ?comments=true (optional)
 	preloadComments := c.DefaultQuery("comments", "false") == "true"
 
 	query := database.DB.Preload("Category")
@@ -78,7 +88,7 @@ func GetProductByID(c *gin.Context) {
 		query = query.Preload("Comments")
 	}
 
-	if err := query.First(&product, productID).Error; err != nil {
+	if err := query.First(&product, uint(productID)).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Product not found"})
 		return
 	}
@@ -105,6 +115,7 @@ func GetAllProductsByCategory(c *gin.Context) {
 	categoryID := c.Param("category_id")
 	var products []models.Product
 
+	// Get the query parameter ?comments=true (optional)
 	preloadComments := c.DefaultQuery("comments", "false") == "true"
 
 	query := database.DB.Where("category_id = ?", categoryID).Preload("Category")
@@ -113,5 +124,36 @@ func GetAllProductsByCategory(c *gin.Context) {
 	}
 
 	query.Find(&products)
+	c.JSON(http.StatusOK, products)
+}
+
+func GetProductsInCart(c *gin.Context) {
+	var userID, ok = utils.GetUserIdFromContext(c)
+	if !ok {
+		return
+	}
+
+	var cartEntries []models.CartEntry
+	if err := database.DB.Where("user_id = ?", userID).Find(&cartEntries).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch cart entries"})
+		return
+	}
+
+	if len(cartEntries) == 0 {
+		c.JSON(http.StatusOK, []models.Product{})
+		return
+	}
+
+	var productIDs []uint
+	for _, entry := range cartEntries {
+		productIDs = append(productIDs, entry.ProductID)
+	}
+
+	var products []models.Product
+	if err := database.DB.Where("id IN ?", productIDs).Find(&products).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch products"})
+		return
+	}
+
 	c.JSON(http.StatusOK, products)
 }
